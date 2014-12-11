@@ -1,0 +1,121 @@
+<?php
+	$nickname = $_GET['u'];
+	$profiler = Mage::getModel('customerprofile/profile')->load($nickname, 'nickname');
+	$customer_id = $profiler->getCustomerId();
+	$_customer = Mage::getModel('customer/customer')->load($customer_id);
+?>
+<div class="row">
+	<?php echo $this->getMessagesBlock()->getGroupedHtml() ?>
+	<?php if($profiler->getStatus()): ?>
+		<div class="page-title ">
+			<h1><?php echo $this->__('Customer Profile') ?></h1>
+		</div>
+		<div>
+			<?php
+				$userAvatar = $profiler->getProfileImg();
+				if(!$userAvatar)
+				{
+					$userAvatar = "http://placehold.it/150x150";
+				}
+			?>
+			<ul>
+				<li style="float: left;"><img src="<?php echo $userAvatar; ?>" style="width: 150px; height: 150px;" ></li>
+				<li style="float: left; padding: 10px">
+					<h1 style="text-transform: uppercase; font-size: 2vw;" ><?php echo $profiler->getNickname(); ?></h1>
+					<p>
+						<?php
+							if($profiler->getShowLevel())
+							{
+								echo $this->__($profiler->getLevel());
+							}
+						?>
+					</p>
+					<p>
+						<?php
+							$dateb = date("d/m/Y", strtotime($_customer->getDob()));
+							if($profiler->getShowBirthday())
+							{
+								echo $this->__('Birthday:');
+								echo " " . $dateb;
+							}
+						?>
+					</p>
+				</li>
+			</ul>
+		</div>
+		<div style="clear: both; padding: 5px 0;"><hr></div>
+		<?php
+			$orders = Mage::getResourceModel('sales/order_collection')
+				->addFieldToSelect('*')
+				->addFieldToFilter('customer_id', $customer_id)
+				->addAttributeToSort('created_at', 'DESC');
+			if(($orders) && ($profiler->getLastBought())):
+		?>
+			<div class="box-head">
+				<h2><?php echo $this->__('Last Products I Bought') ?></h2>
+			</div>
+			<?php
+				$order = Mage::getModel('sales/order')->load($orders->getFirstItem()->getId());
+				$items = $order->getAllItems();
+				//$itemcount = count($items);
+				$_count = 0;
+				$_max = 4; // products to display
+				foreach ($items as $_product):
+			?>
+						<?php
+							$_count++;
+							$productC = Mage::getModel('catalog/product')->load($_product->getProductId());
+						?>
+						<div class="col-md-3 col-lg-3 col-sm-3 col-xs-12" style="width: 16%; margin-left: 0.5%;">
+							<a title="<?php echo $this->htmlEscape($_product->getName()) ?>" href="<?php echo $productC->getProductUrl() ?>"><img src="<?php echo $this->helper('catalog/image')->init($_product, 'small_image')->resize(150, 150); ?>" style="width: 100%;" alt=""></a>
+							<div style="height: 30px; width: 100%; background-color: #CBCDD0;">
+								<div style="height: 30px; width: 30px; background-color: #2E3A47; float: right; padding: 5px 1px;">
+									<a href="<?php echo Mage::helper('checkout/cart')->getAddUrl($productC); ?>">
+										<i class="" style="font-size: 0.75vw; color: #F0F0F0;  height: 30px;"><?php echo $this->__("Add"); ?></i>
+									</a>
+								</div>
+								<p style="font-size: 0.52vw; text-transform: uppercase;padding: 6px;"><?php echo $this->__("Only "); ?><b><?php echo Mage::helper('core')->currency($_product->getPrice()); ?></b></p>
+							</div>
+						</div>
+						<?php if($_count == $_max){break;} ?>
+			<?php endforeach; ?>			
+			<div style="clear: both; padding: 5px 0;"><hr></div>
+		<?php endif; ?>
+		<?php
+			$wishList = Mage::getSingleton('wishlist/wishlist')->loadByCustomer($_customer);
+			$wishListItemCollection = $wishList->getItemCollection();
+		?>
+		<?php if((count($wishListItemCollection)) && ($profiler->getShowFav())): ?>		
+			<div class="box-head">
+				<h2><?php echo $this->__('My Wishlist') ?></h2>
+			</div>
+			<?php
+					$arrProductIds = array();
+					$_count = 0;
+					$_max = 4; // products to display
+					foreach ($wishListItemCollection as $_product):
+			?>
+			<?php
+				$_count++;
+				//$productC = Mage::getModel('catalog/product')->load($_product->getProductId());
+			?>
+				<div class="col-md-3 col-lg-3 col-sm-3 col-xs-12" style="width: 16%; margin-left: 0.5%;">
+					<a title="<?php echo $this->htmlEscape($_product->getName()) ?>" href="<?php echo $_product->getProductUrl() ?>"><img src="<?php echo $this->helper('catalog/image')->init($_product, 'small_image')->resize(150, 150); ?>" style="width: 100%;" alt=""></a>
+					<div style="height: 30px; width: 100%; background-color: #CBCDD0;">
+						<div style="height: 30px; width: 30px; background-color: #2E3A47; float: right; padding: 5px 1px;">
+							<a href="<?php echo Mage::helper('checkout/cart')->getAddUrl($_product); ?>">
+								<i class="" style="font-size: 0.75vw; color: #F0F0F0;  height: 30px;"><?php echo $this->__("Add"); ?></i>
+							</a>
+						</div>
+						<p style="font-size: 0.52vw; text-transform: uppercase;padding: 6px;"><?php echo $this->__("Only "); ?><b><?php echo Mage::helper('core')->currency($_product->getPrice()); ?></b></p>
+					</div>
+				</div>
+				<?php if($_count == $_max){break;} ?>
+			<?php endforeach; ?>
+		<?php endif; ?>
+	<?php else: ?>
+		<div class="page-title ">
+			<h1><?php echo $this->__('Error 404') ?></h1>
+		</div>
+	<?php endif; ?>
+</div>

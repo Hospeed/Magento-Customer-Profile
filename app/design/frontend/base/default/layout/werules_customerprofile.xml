@@ -1,0 +1,22 @@
+<layout>
+    <customer_account>
+        <reference name="customer_account_navigation">
+            <action method="addLink">
+                <name>customer_profile</name>
+                <path>customerprofile/index/index</path>
+                <label>Customer Profile</label>
+            </action>
+        </reference>
+    </customer_account>
+    <customerprofile_index_index>
+        <update handle="customer_account" />
+        <reference name="my.account.wrapper">
+            <block type="core/template" name="customerprofile_content" template="werules_customerprofile_config.phtml"/>            
+        </reference>
+    </customerprofile_index_index>
+    <customerprofile_profile_index>
+        <reference name="content">
+            <block type="core/template" name="customerprofile_content" template="werules_customerprofile_view.phtml"/>            
+        </reference>
+    </customerprofile_profile_index>
+</layout>
