@@ -1,19 +1,19 @@
 <?php
-	$nickname = $_GET['u'];
-	$profiler = Mage::getModel('customerprofile/profile')->load($nickname, 'nickname');
-	$customer_id = $profiler->getCustomerId();
-	$_customer = Mage::getModel('customer/customer')->load($customer_id);
+	$nickname = $_GET['u']; // get nickname from url
+	$profiler = Mage::getModel('customerprofile/profile')->load($nickname, 'nickname'); // load customer profile info from that nickname
+	$customer_id = $profiler->getCustomerId(); // get customer id
+	$_customer = Mage::getModel('customer/customer')->load($customer_id); // load customer info from customer id
 ?>
 <div class="row">
 	<?php echo $this->getMessagesBlock()->getGroupedHtml() ?>
-	<?php if($profiler->getStatus()): ?>
+	<?php if($profiler->getStatus()): ?><!-- if customer enabled his profile -->
 		<div class="page-title ">
 			<h1><?php echo $this->__('Customer Profile') ?></h1>
 		</div>
 		<div>
 			<?php
 				$userAvatar = $profiler->getProfileImg();
-				if(!$userAvatar)
+				if(!$userAvatar) // check if client has a avatar image, if no, throw an sample image from placehold.it
 				{
 					$userAvatar = "http://placehold.it/150x150";
 				}
@@ -21,21 +21,23 @@
 			<ul>
 				<li style="float: left;"><img src="<?php echo $userAvatar; ?>" style="width: 150px; height: 150px;" ></li>
 				<li style="float: left; padding: 10px">
-					<h1 style="text-transform: uppercase; font-size: 2vw;" ><?php echo $profiler->getNickname(); ?></h1>
+					<h1 style="text-transform: uppercase; font-size: 2vw;" >
+						<?php echo $profiler->getNickname(); ?> <!-- show customer nickname -->
+					</h1>
 					<p>
 						<?php
-							if($profiler->getShowLevel())
+							if($profiler->getShowLevel()) // if customer chose to show level...
 							{
-								echo $this->__($profiler->getLevel());
+								echo $this->__($profiler->getLevel()); // ... then show level
 							}
 						?>
 					</p>
 					<p>
 						<?php
 							$dateb = date("d/m/Y", strtotime($_customer->getDob()));
-							if($profiler->getShowBirthday())
+							if($profiler->getShowBirthday()) // if customer chose to show birthday...
 							{
-								echo $this->__('Birthday:');
+								echo $this->__('Birthday:'); // ... then show birthday
 								echo " " . $dateb;
 							}
 						?>
@@ -45,17 +47,17 @@
 		</div>
 		<div style="clear: both; padding: 5px 0;"><hr></div>
 		<?php
-			$orders = Mage::getResourceModel('sales/order_collection')
+			$orders = Mage::getResourceModel('sales/order_collection') // load all orders made by customer
 				->addFieldToSelect('*')
 				->addFieldToFilter('customer_id', $customer_id)
 				->addAttributeToSort('created_at', 'DESC');
-			if(($orders) && ($profiler->getLastBought())):
+			if(($orders) && ($profiler->getLastBought())): // if customer had made any order on the store and chose to show recent bought products
 		?>
 			<div class="box-head">
 				<h2><?php echo $this->__('Last Products I Bought') ?></h2>
 			</div>
 			<?php
-				$order = Mage::getModel('sales/order')->load($orders->getFirstItem()->getId());
+				$order = Mage::getModel('sales/order')->load($orders->getFirstItem()->getId()); // load order from order id
 				$items = $order->getAllItems();
 				//$itemcount = count($items);
 				$_count = 0;
@@ -64,7 +66,7 @@
 			?>
 						<?php
 							$_count++;
-							$productC = Mage::getModel('catalog/product')->load($_product->getProductId());
+							$productC = Mage::getModel('catalog/product')->load($_product->getProductId()); // load product from product id. by some reason the product info from order details dosen't have all the data we need, for example product url
 						?>
 						<div class="col-md-3 col-lg-3 col-sm-3 col-xs-12" style="width: 16%; margin-left: 0.5%;">
 							<a title="<?php echo $this->htmlEscape($_product->getName()) ?>" href="<?php echo $productC->getProductUrl() ?>"><img src="<?php echo $this->helper('catalog/image')->init($_product, 'small_image')->resize(150, 150); ?>" style="width: 100%;" alt=""></a>
@@ -82,10 +84,10 @@
 			<div style="clear: both; padding: 5px 0;"><hr></div>
 		<?php endif; ?>
 		<?php
-			$wishList = Mage::getSingleton('wishlist/wishlist')->loadByCustomer($_customer);
-			$wishListItemCollection = $wishList->getItemCollection();
+			$wishList = Mage::getSingleton('wishlist/wishlist')->loadByCustomer($_customer); // load customer withlist
+			$wishListItemCollection = $wishList->getItemCollection(); // get all products from customer withlist
 		?>
-		<?php if((count($wishListItemCollection)) && ($profiler->getShowFav())): ?>		
+		<?php if((count($wishListItemCollection)) && ($profiler->getShowFav())): ?> <!-- if customer have a wishlist and chose to show it -->
 			<div class="box-head">
 				<h2><?php echo $this->__('My Wishlist') ?></h2>
 			</div>
@@ -97,7 +99,7 @@
 			?>
 			<?php
 				$_count++;
-				//$productC = Mage::getModel('catalog/product')->load($_product->getProductId());
+				//$productC = Mage::getModel('catalog/product')->load($_product->getProductId()); // also load product from product id, but this time wasnt really necessary
 			?>
 				<div class="col-md-3 col-lg-3 col-sm-3 col-xs-12" style="width: 16%; margin-left: 0.5%;">
 					<a title="<?php echo $this->htmlEscape($_product->getName()) ?>" href="<?php echo $_product->getProductUrl() ?>"><img src="<?php echo $this->helper('catalog/image')->init($_product, 'small_image')->resize(150, 150); ?>" style="width: 100%;" alt=""></a>
@@ -113,7 +115,7 @@
 				<?php if($_count == $_max){break;} ?>
 			<?php endforeach; ?>
 		<?php endif; ?>
-	<?php else: ?>
+	<?php else: ?> <!-- if profile is disabled -->
 		<div class="page-title ">
 			<h1><?php echo $this->__('Error 404') ?></h1>
 		</div>

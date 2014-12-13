@@ -1,6 +1,6 @@
 <?php
-	$clientId = Mage::getSingleton('customer/session')->getCustomer()->getId();
-	$cProfile = Mage::getModel('customerprofile/profile')->load($clientId, 'customer_id');
+	$clientId = Mage::getSingleton('customer/session')->getCustomer()->getId(); // get customer id 
+	$cProfile = Mage::getModel('customerprofile/profile')->load($clientId, 'customer_id'); // load profile info from customer id
 ?>
 <script type="text/javascript" charset="utf-8">
 	function nospaces(t){
