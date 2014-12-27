@@ -14,7 +14,7 @@
 	<div class="page-title">
 		<h1><?php echo $this->__('Customer Profile') ?></h1>
 	</div>
-	<form action="<?php echo $this->getUrl('customerprofile/index/save') ?>" method="post" id="form-validate" autocomplete="off">
+	<form action="<?php echo $this->getUrl('customerprofile/settings/save') ?>" method="post" id="form-validate" autocomplete="off">
 		<div class="fieldset">
 			<ul class="form-list">
 				<li>
@@ -37,7 +37,16 @@
 						<input <?php if($cProfile->getShowLevel() == 1) echo "checked"; ?> type="checkbox" title="<?php echo $this->__('Show Level?') ?>" class="checkbox" name="show_level" id="show_level" />
 					</div>
 					<label for="show_level" class="required"><em>*</em><?php echo $this->__('Show Level?') ?></label>
-					<p><?php echo $this->__('Your Current Level Is'); echo " "; echo $this->__($cProfile->getLevel()); ?></p>
+					<p>
+						<?php
+							if($cProfile->getLevel())
+							{
+								echo $this->__('Your Current Level Is');
+								echo " ";
+								echo $this->__($cProfile->getLevel());
+							}
+						?>
+					</p>
 				</li>
 				<li>
 					<div class="input-box">

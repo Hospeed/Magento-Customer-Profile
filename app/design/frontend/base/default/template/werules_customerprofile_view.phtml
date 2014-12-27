@@ -13,7 +13,7 @@
 		<div>
 			<?php
 				$userAvatar = $profiler->getProfileImg();
-				if(!$userAvatar) // check if client has a avatar image, if no, throw an sample image from placehold.it
+				if(!$userAvatar) // check if client has a avatar image, if not, throw an sample image from placehold.it
 				{
 					$userAvatar = "http://placehold.it/150x150";
 				}
@@ -69,7 +69,7 @@
 							$productC = Mage::getModel('catalog/product')->load($_product->getProductId()); // load product from product id. by some reason the product info from order details dosen't have all the data we need, for example product url
 						?>
 						<div class="col-md-3 col-lg-3 col-sm-3 col-xs-12" style="width: 16%; margin-left: 0.5%;">
-							<a title="<?php echo $this->htmlEscape($_product->getName()) ?>" href="<?php echo $productC->getProductUrl() ?>"><img src="<?php echo $this->helper('catalog/image')->init($_product, 'small_image')->resize(150, 150); ?>" style="width: 100%;" alt=""></a>
+							<a title="<?php echo $this->htmlEscape($_product->getName()) ?>" href="<?php echo $productC->getProductUrl() ?>"><img src="<?php echo $this->helper('catalog/image')->init($productC, 'small_image')->resize(150, 150); ?>" style="width: 100%;" alt=""></a>
 							<div style="height: 30px; width: 100%; background-color: #CBCDD0;">
 								<div style="height: 30px; width: 30px; background-color: #2E3A47; float: right; padding: 5px 1px;">
 									<a href="<?php echo Mage::helper('checkout/cart')->getAddUrl($productC); ?>">
@@ -99,10 +99,10 @@
 			?>
 			<?php
 				$_count++;
-				//$productC = Mage::getModel('catalog/product')->load($_product->getProductId()); // also load product from product id, but this time wasnt really necessary
+				$productC = Mage::getModel('catalog/product')->load($_product->getProductId()); // also load product from product id
 			?>
 				<div class="col-md-3 col-lg-3 col-sm-3 col-xs-12" style="width: 16%; margin-left: 0.5%;">
-					<a title="<?php echo $this->htmlEscape($_product->getName()) ?>" href="<?php echo $_product->getProductUrl() ?>"><img src="<?php echo $this->helper('catalog/image')->init($_product, 'small_image')->resize(150, 150); ?>" style="width: 100%;" alt=""></a>
+					<a title="<?php echo $this->htmlEscape($_product->getName()) ?>" href="<?php echo $_product->getProductUrl() ?>"><img src="<?php echo $this->helper('catalog/image')->init($productC, 'small_image')->resize(150, 150); ?>" style="width: 100%;" alt=""></a>
 					<div style="height: 30px; width: 100%; background-color: #CBCDD0;">
 						<div style="height: 30px; width: 30px; background-color: #2E3A47; float: right; padding: 5px 1px;">
 							<a href="<?php echo Mage::helper('checkout/cart')->getAddUrl($_product); ?>">

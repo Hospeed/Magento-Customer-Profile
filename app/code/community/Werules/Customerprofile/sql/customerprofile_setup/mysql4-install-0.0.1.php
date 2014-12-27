@@ -15,7 +15,8 @@ $installer->run("
 	  `show_birthday` smallint(1) NOT NULL default '0',
 	  `show_fav` smallint(1) NOT NULL default '0',
 	  `last_bought` smallint(1) NOT NULL default '0',
-	  `status` smallint(1) NOT NULL default '0'
+	  `status` smallint(1) NOT NULL default '0',
+	  key (entity_id)
 	) ENGINE=InnoDB DEFAULT CHARSET=utf8;
     ")
 
