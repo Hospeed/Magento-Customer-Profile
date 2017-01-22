@@ -12,6 +12,8 @@ This module add the option to show a Public Profile Page of one client, currentl
 - Show Wishlist
 - Friendly URL
 
+Everything can be enabled/disabled in Magento Admin Panel
+
 Use at your own risk
 
 ## Screenshot

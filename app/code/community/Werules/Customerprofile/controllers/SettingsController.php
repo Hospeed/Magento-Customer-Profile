@@ -32,6 +32,7 @@ class Werules_Customerprofile_SettingsController extends Mage_Core_Controller_Fr
 	
 	public function getTotalSpent($clientId) // get total spent by the customer
 	{
+		$sum = 0;
 		$orders = Mage::getResourceModel('sales/order_collection')
 				->addFieldToSelect('*')
 				->addFieldToFilter('customer_id', $clientId); // load all orders from customer
@@ -45,7 +46,7 @@ class Werules_Customerprofile_SettingsController extends Mage_Core_Controller_Fr
 	
 	public function saveAction() // function to sabe profile settings
 	{
-		if ( $this->getRequest()->getPost() ) {
+		if ($this->getRequest()->getPost()) {
 			$customerId = Mage::getSingleton('customer/session')->getCustomer()->getId(); // get customer id
 			//$customerId = Mage::getSingleton('customer/session')->getCustomerId();
 			//$customerId = Mage::getSingleton('Mage_Customer_Model_Session')->getCustomerId();
@@ -69,26 +70,6 @@ class Werules_Customerprofile_SettingsController extends Mage_Core_Controller_Fr
 				$nickname = strtr($nickname, $convertac); // convert all accents to non-accent letters as listed above
 				$nickname = preg_replace('/[^a-zA-Z0-9]+/', '', $nickname); // remove all special caracters like %$#%! and all spaces
 				$nickavailable = Mage::getModel('customerprofile/profile')->load($nickname, 'nickname'); // check if nickname is available
-				if($nickavailable->getNickname() == "") // if nickname available
-				{
-					// Creating a rewrite
-					/* @var $rewrite Mage_Core_Model_Url_Rewrite */
-					$rewrite = Mage::getModel('core/url_rewrite'); // create a rewrite instance
-					$store_id = Mage::app()->getStore()->getStoreId(); // get current store id
-					$routeXist = Mage::getModel('core/url_rewrite')
-						->getCollection()
-						->addFieldToFilter('request_path','customerprofile/' . $nickname . '.html'); // check is magento already have a rewrite for thar nickname
-					if(count($routeXist) > 0){} // if it does, do nothing
-					else
-					{
-						$rewrite->setStoreId($store_id)
-							->setIdPath('customerprofile/' . $nickname)
-							->setRequestPath('customerprofile/' . $nickname . '.html')
-							->setTargetPath('customerprofile/profile/index/?u=' . $nickname) // generate the friendly url by replacing customerprofile/profile/index/?u=nickname by customerprofile/nickname.html
-							->setIsSystem(true)
-							->save();
-					}
-				}
 				if($nickname == "") // if user manage to write a empty value on nickname input...
 				{
 					$status = 0; // ... disable his public profile
@@ -127,18 +108,40 @@ class Werules_Customerprofile_SettingsController extends Mage_Core_Controller_Fr
 							->setStatus($status)
 							->save();
 					}
-					Mage::getSingleton('customer/session')->addSuccess(Mage::helper('customerprofile')->__('Profile was successfully saved')); // throw sucess message to the html page
+
+					// Creating a rewrite
+					/* @var $rewrite Mage_Core_Model_Url_Rewrite */
+					$profile_prefix = Mage::getStoreConfig('customerprofile_options/section_one/profile_prefix');
+					if(!$profile_prefix || !ctype_alnum($profile_prefix)) $profile_prefix = "customerprofile";
+					$profile_prefix = $profile_prefix . "/";
+					$rewrite = Mage::getModel('core/url_rewrite'); // create a rewrite instance
+					$store_id = Mage::app()->getStore()->getStoreId(); // get current store id
+					$routeXist = Mage::getModel('core/url_rewrite')
+						->getCollection()
+						->addFieldToFilter('request_path',$profile_prefix . $nickname . '.html'); // check is magento already have a rewrite for that nickname
+					if(count($routeXist) > 0){} // if it does, do nothing
+					else
+					{
+						$rewrite->setStoreId($store_id)
+							->setIdPath($profile_prefix . $nickname)
+							->setRequestPath($profile_prefix . $nickname . '.html')
+							->setTargetPath('customerprofile/profile/index/?u=' . $nickname) // generate the friendly url by replacing customerprofile/profile/index/?u=nickname by customerprofile/nickname.html
+							->setIsSystem(true)
+							->save();
+					}
+
+					Mage::getSingleton('customer/session')->addSuccess('Profile was successfully saved'); // throw success message to the html page
 				}
 				else
 				{
-					Mage::getSingleton('customer/session')->addError(Mage::helper('customerprofile')->__('This Nickname Is Already Been Used By Someone Else. Please Try Another One')); // throw error message to the html page
+					Mage::getSingleton('customer/session')->addError('This Nickname Is Already Been Used By Someone Else. Please Try Another One'); // throw error message to the html page
 				}
 				$this->_redirect('customerprofile/settings/index'); // redirect customer to settings page
 				return;
 			} catch (Exception $e) {
 				Mage::getSingleton('customer/session')->addError($e->getMessage());
 				Mage::getSingleton('customer/session')->setLocalshipData($this->getRequest()->getPost());
-				Mage::getSingleton('customer/session')->addError(Mage::helper('customerprofile')->__('Error')); // throw error message to the html page
+				Mage::getSingleton('customer/session')->addError('Error'); // throw error message to the html page
 				$this->_redirect('customerprofile/settings/index', array('entity_id' => $this->getRequest()->getParam('entity_id'))); // redirect customer to settings page
 				return;
 			}

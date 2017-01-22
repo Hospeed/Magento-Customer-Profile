@@ -5,6 +5,19 @@
 	$_customer = Mage::getModel('customer/customer')->load($customer_id); // load customer info from customer id
 ?>
 <div class="row">
+	<?php
+		$custom_field_one = Mage::getStoreConfig('customerprofile_options/section_one/custom_field_one'); // Customer Avatar
+		$custom_field_two = Mage::getStoreConfig('customerprofile_options/section_one/custom_field_two'); // Customer Level
+		$custom_field_three = Mage::getStoreConfig('customerprofile_options/section_one/custom_field_three'); // Customer Birthday
+		$custom_field_four = Mage::getStoreConfig('customerprofile_options/section_one/custom_field_four'); // Customer Wishlist
+		$custom_field_five = Mage::getStoreConfig('customerprofile_options/section_one/custom_field_five'); // Customer Last Purchased Products
+		
+		if(!$custom_field_one) $custom_field_one = "0";
+		if(!$custom_field_two) $custom_field_two = "0";
+		if(!$custom_field_three) $custom_field_three = "0";
+		if(!$custom_field_four) $custom_field_four = "0";
+		if(!$custom_field_five) $custom_field_five = "0";
+	?>
 	<?php echo $this->getMessagesBlock()->getGroupedHtml() ?>
 	<?php if($profiler->getStatus()): ?><!-- if customer enabled his profile -->
 		<div class="page-title ">
@@ -19,14 +32,16 @@
 				}
 			?>
 			<ul>
+				<?php if($custom_field_one == "1") : ?>
 				<li style="float: left;"><img src="<?php echo $userAvatar; ?>" style="width: 150px; height: 150px;" ></li>
 				<li style="float: left; padding: 10px">
+				<?php endif; ?>
 					<h1 style="text-transform: uppercase; font-size: 2vw;" >
 						<?php echo $profiler->getNickname(); ?> <!-- show customer nickname -->
 					</h1>
 					<p>
 						<?php
-							if($profiler->getShowLevel()) // if customer chose to show level...
+							if($profiler->getShowLevel() && ($custom_field_two == "1")) // if customer chose to show level...
 							{
 								echo $this->__($profiler->getLevel()); // ... then show level
 							}
@@ -35,7 +50,7 @@
 					<p>
 						<?php
 							$dateb = date("d/m/Y", strtotime($_customer->getDob()));
-							if($profiler->getShowBirthday()) // if customer chose to show birthday...
+							if($profiler->getShowBirthday() && ($custom_field_three == "1")) // if customer chose to show birthday...
 							{
 								echo $this->__('Birthday:'); // ... then show birthday
 								echo " " . $dateb;
@@ -51,7 +66,7 @@
 				->addFieldToSelect('*')
 				->addFieldToFilter('customer_id', $customer_id)
 				->addAttributeToSort('created_at', 'DESC');
-			if(($orders) && ($profiler->getLastBought())): // if customer had made any order on the store and chose to show recent bought products
+			if(($orders) && ($profiler->getLastBought()) && ($custom_field_five == "1")): // if customer had made any order on the store and chose to show recent bought products
 		?>
 			<div class="box-head">
 				<h2><?php echo $this->__('Last Products I Bought') ?></h2>
@@ -87,7 +102,7 @@
 			$wishList = Mage::getSingleton('wishlist/wishlist')->loadByCustomer($_customer); // load customer withlist
 			$wishListItemCollection = $wishList->getItemCollection(); // get all products from customer withlist
 		?>
-		<?php if((count($wishListItemCollection)) && ($profiler->getShowFav())): ?> <!-- if customer have a wishlist and chose to show it -->
+		<?php if((count($wishListItemCollection)) && ($profiler->getShowFav()) && ($custom_field_four == "1")): ?> <!-- if customer have a wishlist and choose to show it -->
 			<div class="box-head">
 				<h2><?php echo $this->__('My Wishlist') ?></h2>
 			</div>

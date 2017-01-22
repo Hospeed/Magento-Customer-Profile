@@ -40,9 +40,9 @@
 			</customerprofile_mysql4>
 		</models>
 		<helpers>
-			<customerprofile>
+			<werules_customerprofile>
 				<class>Werules_Customerprofile_Helper</class>
-			</customerprofile>
+			</werules_customerprofile>
 		</helpers>
 		<resources>
 			<customerprofile_setup>
@@ -65,5 +65,27 @@
 				</connection>
 			</customerprofile_read>
 		</resources>		 
-	</global>	
+	</global>
+	
+	<adminhtml>
+		<acl>
+			<resources>
+				<admin>
+					<children>
+						<system>
+							<children>
+								<config>
+									<children>
+										<customerprofile_options>
+											<title>Custom Configuration Section</title>
+										</customerprofile_options>
+									</children>
+								</config>
+							</children>
+						</system>
+					</children>
+				</admin>
+			</resources>
+		</acl>
+	</adminhtml>
 </config>

@@ -14,6 +14,21 @@
 	<div class="page-title">
 		<h1><?php echo $this->__('Customer Profile') ?></h1>
 	</div>
+	<?php
+		$profile_prefix = Mage::getStoreConfig('customerprofile_options/section_one/profile_prefix'); // Profile URL Prefix
+		$custom_field_one = Mage::getStoreConfig('customerprofile_options/section_one/custom_field_one'); // Customer Avatar
+		$custom_field_two = Mage::getStoreConfig('customerprofile_options/section_one/custom_field_two'); // Customer Level
+		$custom_field_three = Mage::getStoreConfig('customerprofile_options/section_one/custom_field_three'); // Customer Birthday
+		$custom_field_four = Mage::getStoreConfig('customerprofile_options/section_one/custom_field_four'); // Customer Wishlist
+		$custom_field_five = Mage::getStoreConfig('customerprofile_options/section_one/custom_field_five'); // Customer Last Purchased Products
+		
+		if(!$profile_prefix || !ctype_alnum($profile_prefix)) $profile_prefix = "customerprofile";
+		if(!$custom_field_one) $custom_field_one = "0";
+		if(!$custom_field_two) $custom_field_two = "0";
+		if(!$custom_field_three) $custom_field_three = "0";
+		if(!$custom_field_four) $custom_field_four = "0";
+		if(!$custom_field_five) $custom_field_five = "0";
+	?>
 	<form action="<?php echo $this->getUrl('customerprofile/settings/save') ?>" method="post" id="form-validate" autocomplete="off">
 		<div class="fieldset">
 			<ul class="form-list">
@@ -24,6 +39,7 @@
 						<p style="font-size: 10px;" ><?php echo $this->__('Your Profile URL will be '); echo Mage::getBaseUrl(Mage_Core_Model_Store::URL_TYPE_WEB); echo "customerprofile/"; echo $this->__('nickname'); ?>.html</p>
 					</div>
 				</li>
+				<?php if($custom_field_one == "1") : ?>
 				<li>
 					<label for="profile_img" class="required"><em>*</em><?php echo $this->__('Profile Image URL (150x150)') ?></label>
 					<div class="input-box">
@@ -32,6 +48,8 @@
 						<p style="font-size: 10px;" ><?php echo $this->__('Put Here Your Avatar URL. Try'); ?><a href="http://imgur.com" target="blank"> imgur.com </a><?php echo $this->__('To Upload Your Own Image.'); ?></p>
 					</div>
 				</li>
+				<?php endif; ?>
+				<?php if($custom_field_two == "1") : ?>
 				<li>
 					<div class="input-box">
 						<input <?php if($cProfile->getShowLevel() == 1) echo "checked"; ?> type="checkbox" title="<?php echo $this->__('Show Level?') ?>" class="checkbox" name="show_level" id="show_level" />
@@ -48,24 +66,31 @@
 						?>
 					</p>
 				</li>
+				<?php endif; ?>
+				<?php if($custom_field_three == "1") : ?>
 				<li>
 					<div class="input-box">
 						<input <?php if($cProfile->getShowBirthday() == 1) echo "checked"; ?> type="checkbox" title="<?php echo $this->__('Show Birthday?') ?>" class="checkbox" name="show_birthday" id="show_birthday" />
 					</div>
 					<label for="show_birthday" class="required"><em>*</em><?php echo $this->__('Show Birthday?') ?></label>
 				</li>
+				<?php endif; ?>
+				<?php if($custom_field_four == "1") : ?>
 				<li>
 					<div class="input-box">
 						<input <?php if($cProfile->getShowFav() == 1) echo "checked"; ?> type="checkbox" title="<?php echo $this->__('Show Wishlist?') ?>" class="checkbox" name="show_fav" id="show_fav" />
 					</div>
 					<label for="show_fav" class="required"><em>*</em><?php echo $this->__('Show Wishlist?') ?></label>
 				</li>
+				<?php endif; ?>
+				<?php if($custom_field_five == "1") : ?>
 				<li>
 					<div class="input-box">
 						<input <?php if($cProfile->getLastBought() == 1) echo "checked"; ?> type="checkbox" title="<?php echo $this->__('Show Last Bought Products?') ?>" class="checkbox" name="last_bought" id="last_bought" />
 					</div>
 					<label for="last_bought" class="required"><em>*</em><?php echo $this->__('Show Last Bought Products?') ?></label>
 				</li>
+				<?php endif; ?>
 				<li>
 					<div class="input-box">
 						<input <?php if($cProfile->getStatus() == 1) echo "checked"; ?> type="checkbox" title="<?php echo $this->__('Enable Public Profile?') ?>" class="checkbox" name="status" id="status" />
@@ -75,9 +100,10 @@
 			</ul>
 			<?php if($cProfile->getNickname())
 			{
+				$profile_prefix = $profile_prefix . "/";
 				echo '<hr>';
 				echo $this->__('Your Profile URL Is');
-				$proUrl = Mage::getBaseUrl(Mage_Core_Model_Store::URL_TYPE_WEB) . "customerprofile/" . $cProfile->getNickname() . ".html";
+				$proUrl = Mage::getBaseUrl(Mage_Core_Model_Store::URL_TYPE_WEB) . $profile_prefix . $cProfile->getNickname() . ".html";
 				echo ' <a href="' . $proUrl . '" target="blank">' . $proUrl . '</a>';
 			}
 			?>
