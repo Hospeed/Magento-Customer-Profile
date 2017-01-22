@@ -18,6 +18,6 @@ $installer->run("
 	  `status` smallint(1) NOT NULL default '0',
 	  key (entity_id)
 	) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-    ")
+    ");
 
 $installer->endSetup();
