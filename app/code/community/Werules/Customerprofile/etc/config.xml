@@ -5,26 +5,26 @@
 			<version>0.0.1</version>
 		</Werules_Customerprofile>
 	</modules>
-    <frontend>
-        <layout>
-            <updates>
-                <werules_customerprofile module="Werules_Customerprofile">
-                    <file>werules_customerprofile.xml</file>
-                </werules_customerprofile>
-            </updates>
-        </layout>    
-        <routers>
-            <customerprofile>
-                <use>standard</use>
-                <args>
-                    <module>Werules_Customerprofile</module>
-                    <frontName>customerprofile</frontName>
-                </args>
-            </customerprofile>
-        </routers>
-    </frontend>
-    
-    <global>
+	<frontend>
+		<layout>
+			<updates>
+				<werules_customerprofile module="werules_customerprofile">
+					<file>werules_customerprofile.xml</file>
+				</werules_customerprofile>
+			</updates>
+		</layout>	
+		<routers>
+			<customerprofile>
+				<use>standard</use>
+				<args>
+					<module>Werules_Customerprofile</module>
+					<frontName>customerprofile</frontName>
+				</args>
+			</customerprofile>
+		</routers>
+	</frontend>
+	
+	<global>
 		<models>
 			<customerprofile>
 				<class>Werules_Customerprofile_Model</class>
@@ -34,36 +34,36 @@
 				<class>Werules_Customerprofile_Model_Mysql4</class>
 				<entities>
 					<profile>
-						<table>wr_customerprofile</table>  <!-- Actual table name in sql  -->
+						<table>wr_customerprofile</table>	<!-- Actual table name in sql	-->
 					</profile>
 				</entities>
 			</customerprofile_mysql4>
 		</models>
-        <helpers>
-            <customerprofile>
-                <class>Werules_Customerprofile_Helper</class>
-            </customerprofile>
-        </helpers>
+		<helpers>
+			<customerprofile>
+				<class>Werules_Customerprofile_Helper</class>
+			</customerprofile>
+		</helpers>
 		<resources>
-		  <customerprofile_setup>
-			<setup>
-			  <module>Werules_Customerprofile</module>
-			  <class>Mage_Customer_Model_Resource_Setup</class>
-			</setup>
-			<connection>
-			  <use>core_setup</use>
-			</connection>
-		  </customerprofile_setup>
-		  <customerprofile_write>
-			<connection>
-			  <use>core_write</use>
-			</connection>
-		  </customerprofile_write>
-		  <customerprofile_read>
-			<connection>
-			  <use>core_read</use>
-			</connection>
-		  </customerprofile_read>
-		</resources>       
-    </global>    
+			<customerprofile_setup>
+				<setup>
+					<module>Werules_Customerprofile</module>
+					<class>Mage_Customer_Model_Resource_Setup</class>
+				</setup>
+				<connection>
+					<use>core_setup</use>
+				</connection>
+			</customerprofile_setup>
+			<customerprofile_write>
+				<connection>
+					<use>core_write</use>
+				</connection>
+			</customerprofile_write>
+			<customerprofile_read>
+				<connection>
+					<use>core_read</use>
+				</connection>
+			</customerprofile_read>
+		</resources>		 
+	</global>	
 </config>

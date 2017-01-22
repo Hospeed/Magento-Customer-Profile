@@ -1,22 +1,22 @@
 <?php
 class Werules_Customerprofile_SettingsController extends Mage_Core_Controller_Front_Action {
-    public function preDispatch() // function that makes the settings page only available when the user is logged in
-    {
-        parent::preDispatch();
-        $action = $this->getRequest()->getActionName();
-        $loginUrl = Mage::helper('customer')->getLoginUrl();
+	public function preDispatch() // function that makes the settings page only available when the user is logged in
+	{
+		parent::preDispatch();
+		$action = $this->getRequest()->getActionName();
+		$loginUrl = Mage::helper('customer')->getLoginUrl();
 
-        if (!Mage::getSingleton('customer/session')->authenticate($this, $loginUrl)) {
-            $this->setFlag('', self::FLAG_NO_DISPATCH, true);
-        }
-    }
-    public function indexAction() // main action, sets layout and page title
-    {
-        $this->loadLayout();
+		if (!Mage::getSingleton('customer/session')->authenticate($this, $loginUrl)) {
+			$this->setFlag('', self::FLAG_NO_DISPATCH, true);
+		}
+	}
+	public function indexAction() // main action, sets layout and page title
+	{
+		$this->loadLayout();
 		$this->_initLayoutMessages('customer/session');
 		$this->getLayout()->getBlock('head')->setTitle(Mage::app()->getStore()->getFrontendName() . " - " . $this->__('Profile Settings')); // set title. this will display as: Store Name - Profile Settings. If you want to remove the Store Name just delete Mage::app()->getStore()->getFrontendName() . " - " . 
-        $this->renderLayout();
-    }
+		$this->renderLayout();
+	}
 	
 	public function getLevel($total) // simple function that creates customers levels based on how much he/she spent on the store
 	{
