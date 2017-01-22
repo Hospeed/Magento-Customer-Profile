@@ -34,6 +34,3 @@ Profile Settings: app/design/frontend/base/default/template/werules_customerprof
 2. Clear Cache
 
 3. Enjoy
-
-
-ps. For some reason the database is not being created in some magento installations. I'm looking into it. For now you can check the file ```app/code/community/Werules/Customerprofile/sql/customerprofile_setup/mysql4-install-0.0.1.php``` and create a table on your database just like it shows on this file
